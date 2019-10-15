@@ -49,7 +49,7 @@ __Nota :__ Instâncias foram espelhadas da [MDGPLIB](http://grafo.etsii.urjc.es/
 
 ### Home Health Care Routing and Scheduling Problem (HHCRSP)
 
-O formato das instâncias está descrito [aqui](http://wcms.itz.uni-halle.de/download.php?down=38056&elem=2882667), e são nomeaas onforme a convenção: em `InstanzCPLEX_HCSRP_50_2.txt`, `50` indica o número de pacientes considerados no problema, e `2` indica o _id_ da instância dentro da família. Os limitantes superiores das instâncias de teste foram extraídos de [Neto et al. (2019)](neto-2019.pdf). Uma formulação matemática para o problema está disponível em [Mankowska et al. (2014)](https://link.springer.com/article/10.1007%2Fs10729-013-9243-1). __Atenção__: as restrições de sincronização das rotas (11) e (12) devem ser _desconsideradas_ no trabalho da disciplina!
+O formato das instâncias está descrito [aqui](http://wcms.itz.uni-halle.de/download.php?down=38056&elem=2882667), e são nomeadas conforme a convenção: em `InstanzCPLEX_HCSRP_50_2.txt`, `50` indica o número de pacientes considerados no problema, e `2` indica o _id_ da instância dentro da família. Os limitantes superiores das instâncias de teste foram extraídos de [Neto et al. (2019)](neto-2019.pdf). Uma formulação matemática para o problema está disponível em [Mankowska et al. (2014)](https://link.springer.com/article/10.1007%2Fs10729-013-9243-1). __Atenção__: as restrições de sincronização das rotas (11) e (12) devem ser _desconsideradas_ no trabalho da disciplina!
 
 | Instância | Limitante superior |
 |-----------|-------------------:|
