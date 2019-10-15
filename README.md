@@ -12,12 +12,12 @@ As instâncias do mTTP são matrizes quadrada com as distâncias entre todos os 
 
 | Instância | BKS    |
 |-----------|-------:|
-|[Nl4](instancias/mttp/N4.txt)             | 8276   |
-|[Nl6](instancias/mttp/N6.txt)             | 26588  |
-|[Nl8](instancias/mttp/N8.txt)             | 41928  |
-|[Nl10](instancias/mttp/N10.txt)           | 63832  |
-|[Nl12](instancias/mttp/N12.txt)           | 119608 |
-|[Nl14](instancias/mttp/N14.txt)           | 199363 |
+|[NL4](instancias/mttp/N4.txt)             | 8276   |
+|[NL6](instancias/mttp/N6.txt)             | 26588  |
+|[NL8](instancias/mttp/N8.txt)             | 41928  |
+|[NL10](instancias/mttp/N10.txt)           | 63832  |
+|[NL12](instancias/mttp/N12.txt)           | 119608 |
+|[NL14](instancias/mttp/N14.txt)           | 199363 |
 |[circ6](instancias/mttp/circ6.txt)        | 72     |
 |[circ8](instancias/mttp/circ8.txt)        | 140    |
 |[circ10](instancias/mttp/circ10.txt)      | 272    |
