@@ -8,7 +8,7 @@ Uma especificação mais detalhada do projeto final da disciplina está disponí
 
 ### Mirrored Traveling Tournament Problem (mTTP)
 
-As instâncias do mTTP são matrizes quadrada com as distâncias entre todos os pares de cidades do problema. O nome das instâncias inclui algum contexto de onde elas foram retiradas, bem como o número de equipes consideradas no problema. Os melhores valores de solução conhecidos (BKS) foram extraídos de [Santos e Carvalho. (2018)](https://proceedings.science/sbpo/papers/algoritmo-genetico-aplicado-a-otimizacao-do-planejamento-de-torneios-esportivos) e uma formulação matemática do problema pode ser encontrada em [Carvalho e Lorena (2012)](https://www.sciencedirect.com/science/article/abs/pii/S0360835212001726).
+As instâncias do mTTP são matrizes quadrada com as distâncias entre todos os pares de cidades do problema. O nome das instâncias inclui algum contexto de onde elas foram retiradas, bem como o número de equipes consideradas no problema. Os melhores valores de solução conhecidos (BKS) foram extraídos de [Santos e Carvalho (2018)](https://proceedings.science/sbpo/papers/algoritmo-genetico-aplicado-a-otimizacao-do-planejamento-de-torneios-esportivos) e uma formulação matemática do problema pode ser encontrada em [Carvalho e Lorena (2012)](https://www.sciencedirect.com/science/article/abs/pii/S0360835212001726).
 
 | Instância | BKS    |
 |-----------|-------:|
@@ -28,10 +28,10 @@ __Nota :__ As instâncias foram espelhadas da biblioteca [Challenge Traveling To
 
 ### Maximally Diverse Grouping Problem (MDGP)
 
-As instâncias do MDGP tem seu formato descrito [neste arquivo](instancias/mdgp/instance_format.txt), e são nomeadas conforme a convenção: `RanInt_n010_ss_10.txt`, `RanInt` indica o procedimento utilizado na geração dos pesos; `n010` indica o número de "individuos" do problema, `ss` indica que os grupos devem ter o mesmo número de indivíduos, e `10` indica _id_ da instância dentro da família de casos de teste. Os melhores valores de solução conhecidos (BKS) foram extraídos de [Araujo e Figueiredo. (2018)](https://proceedings.science/sbpo/papers/o-problema-da-diversidade-maxima-de-grupos%3A-uma-abordagem-de-programacao-linear-inteira). Esse mesmo trabalho apresenta uma formulação matemática para o problema.
+As instâncias do MDGP tem seu formato descrito [neste arquivo](instancias/mdgp/instance_format.txt), e são nomeadas conforme a convenção: `RanInt_n010_ss_10.txt`, `RanInt` indica o procedimento utilizado na geração dos pesos, `n010` indica o número de "individuos" do problema, `ss` indica que os grupos devem ter o mesmo número de indivíduos, e `10` indica _id_ da instância dentro da família de casos de teste. Os melhores valores de solução conhecidos (BKS) foram extraídos de [Araujo e Figueiredo. (2018)](https://proceedings.science/sbpo/papers/o-problema-da-diversidade-maxima-de-grupos%3A-uma-abordagem-de-programacao-linear-inteira). Esse mesmo trabalho apresenta uma formulação matemática para o problema.
 
 | Instância | _n_ | Tamanho das equipes | BKS |
-|-----------|----:|--------------------:|----:|
+|-----------|----:|:-------------------:|----:|
 |[RanInt_07](instancias/mdgp/RanInt_n010_ds_07.txt)   | 10  | ≠   | 1221.00     |
 |[RanReal_10](instancias/mdgp/RanReal_n010_ss_10.txt)  | 10  | =   | 1195.92    |
 |[RanInt_03](instancias/mdgp/RanInt_n012_ss_03.txt)   | 12  | =   | 993.00      |
@@ -53,16 +53,16 @@ O formato das instâncias está descrito [aqui](http://wcms.itz.uni-halle.de/dow
 
 | Instância | Limitante superior |
 |-----------|-------------------:|
-|A3  |   305.90   |
-|B3  |   399.20   |
-|B9  |   403.80   |
-|C1  |  1006.72   |
-|C2  |   597.06   |
-|C6  |   852.04   |
-|D10 |  1306.60   |
-|E8  |   832.73   |
-|F1  |  1721.40   |
-|G9  |  2415.50   |
+|[A3](instancias/hhcrsp/InstanzCPLEX_HCSRP_10_3.txt)  |   305.90   |
+|[B3](instancias/hhcrsp/InstanzCPLEX_HCSRP_25_3.txt)  |   399.20   |
+|[B9](instancias/hhcrsp/InstanzCPLEX_HCSRP_25_9.txt)  |   403.80   |
+|[C1](instancias/hhcrsp/InstanzCPLEX_HCSRP_50_1.txt)  |  1006.72   |
+|[C2](instancias/hhcrsp/InstanzCPLEX_HCSRP_50_2.txt)  |   597.06   |
+|[C6](instancias/hhcrsp/InstanzCPLEX_HCSRP_50_6.txt)  |   852.04   |
+|[D10](instancias/hhcrsp/InstanzCPLEX_HCSRP_75_10.txt) |  1306.60   |
+|[E8](instancias/hhcrsp/InstanzVNS_HCSRP_100_8.txt)  |   832.73   |
+|[F1](instancias/hhcrsp/InstanzVNS_HCSRP_200_1.txt)  |  1721.40   |
+|[G9](instancias/hhcrsp/InstanzVNS_HCSRP_300_9.txt)  |  2415.50   |
 
 
 __Nota :__ As instâncias foram espelhadas de [Benchmark instances for the home health care routing and scheduling problem](https://prodlog.wiwi.uni-halle.de/forschung/research_data/hhcrsp/). Adicionalmente, o formato das instâncias foi normalizado para o padrão utilizado em `InstanzCPLEX`. Caso se opte por usar as instâncias originais da Dorota Mankowska, atente que as `InstanzVNS` tem formato diferente!
