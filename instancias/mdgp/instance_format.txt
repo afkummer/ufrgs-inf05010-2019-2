@@ -1,0 +1,10 @@
+MDGP Instance format:
+
+The first line has the following fields separed with spaces:
+M: Integer indicating the number of elements 
+G: Integer indicating the The number of groups
+Group Type: The value can be "ss" or "ds" and represent "same size group" or "different size group"
+Group limits: The last numbers of the line correspond to the lower and upper limits of each group
+
+The following lines contain the distance between elements with the format:
+elementA elementB distance
