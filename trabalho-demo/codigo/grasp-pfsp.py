@@ -135,7 +135,7 @@ if __name__ == '__main__':
       # tarefas aleatoriamente, e faz sucessivas tentativas de troca
       # em busca de soluções melhores.
       def apply2swap(times):
-         global inst, jobSeq, complSlots, iterLastImpr, bestObj
+         global inst, jobSeq, complSlots, iterLastImpr, bestObj, doPrint
          for i in range(times):
             # Escolhe duas tarefas aleatórias distintas.
             j1 = random.randint(0, inst.numJobs-1)
