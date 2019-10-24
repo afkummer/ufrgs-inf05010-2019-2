@@ -18,7 +18,7 @@ if [ ! -d $TDIR ]; then
 fi
 
 # Prepara o arquivo de saída geral.
-echo "instancia,rep,alpha,time,obj," > resultados.csv
+echo "instancia,seed,alpha,tempo,obj.grasp,obj.best" > resultados.csv
 
 # Faz o loop sobre os dados de saída.
 for f in `ls -1 $TDIR/*`; do
