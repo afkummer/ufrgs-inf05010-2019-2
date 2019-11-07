@@ -26,5 +26,9 @@ O script `roda-glpk.sh` também define alguns parâmetros de execução do
 variável que o _branch_ deve ser feito
 
 Para uma descrição mais completa das opções aceitas pelo `glpsol`, consulte
-a documentação do _solver_.
+a documentação do _solver_. Além disso, `roda-glpk.sh` automaticamente salva
+o _log_ de execução em `glpk.log`, e a solução do problema em `pfsp.sol`.
+Caso o valor da solução seja referente a uma solução inteira, a relaxação
+pode ser conferida no arquivo de _log_, no valor de função objetivo da linha
+imediatamente acima de `OPTIMAL LP SOLUTION FOUND`.
 
