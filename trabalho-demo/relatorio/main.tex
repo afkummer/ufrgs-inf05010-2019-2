@@ -12,6 +12,11 @@
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{booktabs,longtable}
 
+\usepackage{algpseudocode}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\SetArgSty{textnormal}
+\DontPrintSemicolon
+
 \sloppy
 
 \title{Metaheurística GRASP com refinamento por busca local para o Flowshop Permutacional}
@@ -51,30 +56,46 @@ execução das tarefas que minimize o tempo final de processamento da última
 máquina considerada. Essa ordem de execução é seguida por todas as máquinas.
 
 \cite{tseng2004-flowshop-models} propuseram um modelo de programação linear
-inteira mista para o problema.
-
-
-Variável $C_{ri} \geqslant 0$ indica o tempo que a tarefa $i$ completou na máquina $r$.
-
-Variável $D_{ik} \in \{0,1\}$ (=1) indica se a tarefa $i$ é executada em algum momento antes da
-tarefa $k$; (=0) caso contrário.
-
-Parâmetro ``big-M'' $P$.
+inteira mista para o problema. As variáveis binárias $D_{ik} \in \{0,1\}$
+assumem o valor $1$ para indicar
+se a tarefa $i$ deve ser processada em algum momento anterior ao 
+processamento da tarefa $k$, com $1 \leqslant i < k \leqslant N$.
+Já as variáveis contínuas $C_{ri} \geqslant 0$ indicam o horizonte de tempo 
+de processamento que cada tarefa $ 1 \leqslant i \leqslant N$ em cada
+máquina $1 \leqslant r \leqslant M$.
+Adicionamente, a variável $C_\mathrm{max} \geqslant 0$ é utilizado no
+cálculo do tempo final de processamento da última máquina. 
+De posse dessas definições, a seguinte formulação modela o Problema de 
+Flowshop permutacional. Note a existência de um parâmetro $P$, que é um 
+número suficientemente grande usado como ``big-M'' na modelagem das 
+restrições lógicas do modelo.
 
 \begin{align}
-   \text{Minimize } C_\mathrm{max}
+   \text{Minimize } C_\mathrm{max} \label{pfsp:obj}
 \end{align}
 Sujeito a:
 \begin{align}
-   & C_{1i} \geqslant T_{1i} & & 1 \leqslant i \leqslant N\\
+   & C_{1i} \geqslant T_{1i} & & 1 \leqslant i \leqslant N \label{pfsp:complM0} \\
    & C_{ri} - C_{r-1,i} \geqslant T_{ri} & & 2 \leqslant r \leqslant M, 
-      1 \leqslant i \leqslant N\\
+      1 \leqslant i \leqslant N \label{pfsp:complM} \\
    & C_{ri} - C_{rk} + PD_{ik} \geqslant T_{ri} & & 1 \leqslant r \leqslant M, 
-      1 \leqslant i < k \leqslant N\\
+      1 \leqslant i < k \leqslant N \label{pfsp:jobSeqA}\\
    & C_{ri} - C_{rk} + PD_{ik} \leqslant P - T_{rk} & & 1 \leqslant r \leqslant M, 
-      1 \leqslant i < k \leqslant N\\
-   & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N
+      1 \leqslant i < k \leqslant N \label{pfsp:jobSeqB} \\
+   & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N \label{pfsp:makespan} \\
+   & C_{ri} \geqslant 0 & & 1 \leqslant r \leqslant M, 1 \leqslant i \leqslant N \label{pfsp:Cdom}\\
+   & D_{ik} \in \{0,1\} & & 1 \leqslant i < k \leqslant N \label{pfsp:Ddom}
 \end{align}
+
+A função objetivo (\ref{pfsp:obj}) minimiza o tempo de processamento final da
+última máquina do problema. As restrições (\ref{pfsp:complM0}) e
+(\ref{pfsp:complM}) modelam o tempo final de processamento das tarefas na
+primera e demais máquinas, respectivamente. As restrições
+(\ref{pfsp:jobSeqA}--\ref{pfsp:jobSeqB}) garantem uma única ordem de execução 
+das tarefas em todas as máquinas. A restrição (\ref{pfsp:makespan}) calcula o
+tempo final de processamento da última máquina. Por fim, as restrições
+(\ref{pfsp:Cdom}--\ref{pfsp:Ddom}) modelam o domínio das variáveis de decisão do
+problema.
 
 \section{Método de solução com GRASP e Busca Local}
 
