@@ -28,12 +28,31 @@
 
 \maketitle
 
-\section{Modelagem matemática com programação linear inteira}
+\section{Introdução}
 
-O modelo utilizado foi descrito por \cite{tseng2004-flowshop-models}.
+Este relatório refere-se ao trabalho de otimização da disciplina de Otimização
+Combinatória (INF05010), cursada no período de 2019/1. O texto apresenta o
+problema de otimização considerado e introduz um modelo de Programação Linear
+Inteira da literatura do problema. Detalhes sobre o desenvolvimento de um método
+de solução heurístico baseado em GRASP e Busca Local encontram-se disponíveis
+nas seções indicadas, e o desempenho do método proposto é comparado com os
+melhores valores de solução atualmente conhecidos para um pequeno conjunto de
+instâncias de teste. 
 
-Considera $M$ máquinas, $N$ tarefas. $T_{rj} \geqslant 0$ representa o tempo de processamento
-da tarefa $j$ na máquina $r$, para toda tarefa e máquina.
+\section{Descrição do problema}
+
+O Problema de Flowshop Permutacional (PFSP) é um tema de pesquisa recorrente
+nos estudos da otimização combinatória. O problema considera um conjunto de 
+$M$ máquinas e $N$ tarefas, em que todas as tarefas devem ser processadas 
+exatamente uma vez em cada uma das máquinas consideradas. Cada tarefa 
+$1 \leqslant j \leqslant N$ demora $T_{rj} \geqslant 0$ unidades de tempo para ser 
+processada cada máquina $1 \leqslant r \leqslant M$. Busca-se uma ordem de
+execução das tarefas que minimize o tempo final de processamento da última 
+máquina considerada. Essa ordem de execução é seguida por todas as máquinas.
+
+\cite{tseng2004-flowshop-models} propuseram um modelo de programação linear
+inteira mista para o problema.
+
 
 Variável $C_{ri} \geqslant 0$ indica o tempo que a tarefa $i$ completou na máquina $r$.
 
@@ -57,6 +76,7 @@ Sujeito a:
    & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N
 \end{align}
 
+\section{Método de solução com GRASP e Busca Local}
 
 \section{Resultados computacionais}
 
@@ -82,49 +102,53 @@ Sujeito a:
    \end{tabular}
 \end{table}
 
-\begin{figure}
-   \centering
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR10_15_1.pdf}
-   }
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_10_3.pdf}
-   }\\
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_20_1.pdf}
-   }
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR60_5_10.pdf}
-   }\\
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
-   }
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
-   }
-   \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
-      instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
-      por caso de teste.}
-\end{figure}
+\section{Conclusões}
 
-\begin{figure}
-   \ContinuedFloat
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_40_1.pdf}
-   }
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_60_3.pdf}
-   }\\
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR600_20_1.pdf}
-   }
-   \subfloat[][]{
-      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR700_20_10.pdf}
-   }
-   \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
-      instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
-      por caso de teste. Continuação da figura anterior.}
-\end{figure}
+% \begin{figure}
+%    \centering
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR10_15_1.pdf}
+%    }
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_10_3.pdf}
+%    }\\
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_20_1.pdf}
+%    }
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR60_5_10.pdf}
+%    }\\
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
+%    }
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
+%    }
+%    \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
+%       instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
+%       por caso de teste.}
+% \end{figure}
+% 
+% \begin{figure}
+%    \ContinuedFloat
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_40_1.pdf}
+%    }
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_60_3.pdf}
+%    }\\
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR600_20_1.pdf}
+%    }
+%    \subfloat[][]{
+%       \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR700_20_10.pdf}
+%    }
+%    \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
+%       instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
+%       por caso de teste. Continuação da figura anterior.}
+% \end{figure}
+
+\section*{Referências}
 
 \bibliographystyle{sbc}
 \bibliography{referencias}
