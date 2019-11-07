@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[brazil]{babel}   
+\usepackage[utf8]{inputenc}  
+\usepackage[T1]{fontenc}
+
+\usepackage{microtype}
+\usepackage[caption=false]{subfig}
+\usepackage{bm}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs,longtable}
+
+\sloppy
+
+\title{Metaheurística GRASP com refinamento por busca local para o Flowshop Permutacional}
+
+\author{Alberto F. K. Neto\inst{1}}
+
+\address{Instituto de Informática -- Universidade Federal do Rio Grande do Sul
+  (UFRGS)\\
+  Caixa Postal 15.064 -- 91.501-970 -- Porto Alegre -- RS -- Brazil
+  \email{afkneto@inf.ufrgs.br} 
+}
+
+\begin{document} 
+
+\maketitle
+
+\section{Modelagem matemática com programação linear inteira}
+
+O modelo utilizado foi descrito por \cite{tseng2004-flowshop-models}.
+
+Considera $M$ máquinas, $N$ tarefas. $T_{rj} \geqslant 0$ representa o tempo de processamento
+da tarefa $j$ na máquina $r$, para toda tarefa e máquina.
+
+Variável $C_{ri} \geqslant 0$ indica o tempo que a tarefa $i$ completou na máquina $r$.
+
+Variável $D_{ik} \in \{0,1\}$ (=1) indica se a tarefa $i$ é executada em algum momento antes da
+tarefa $k$; (=0) caso contrário.
+
+Parâmetro ``big-M'' $P$.
+
+\begin{align}
+   \text{Minimize } C_\mathrm{max}
+\end{align}
+Sujeito a:
+\begin{align}
+   & C_{1i} \geqslant T_{1i} & & 1 \leqslant i \leqslant N\\
+   & C_{ri} - C_{r-1,i} \geqslant T_{ri} & & 2 \leqslant r \leqslant M, 
+      1 \leqslant i \leqslant N\\
+   & C_{ri} - C_{rk} + PD_{ik} \geqslant T_{ri} & & 1 \leqslant r \leqslant M, 
+      1 \leqslant i < k \leqslant N\\
+   & C_{ri} - C_{rk} + PD_{ik} \leqslant P - T_{rk} & & 1 \leqslant r \leqslant M, 
+      1 \leqslant i < k \leqslant N\\
+   & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N
+\end{align}
+
+
+\section{Resultados computacionais}
+
+\tiny
+\input{table-medias.tex}
+\normalsize
+
+\begin{table}[ht]
+   \begin{tabular}{lrrrr}
+      \toprule
+      Instância & BKS & Valor relaxação & Obj. solução inteira & GAP$_\mathrm{BKS}$ (\%) \\
+      \midrule
+      VFR10\_15\_1 & 1307 & 880.0 & 1307 & \phantom{0}0.0\\
+      VFR10\_10\_3 & 1592 & 687.0 & 1873 & 56.9\\
+      VFR\_20\_20\_1 & 2270 & 1391.0 & 2573 & 42.6\\
+      VFR60\_5\_10 & 3663 & 382.0 & 3878 & 89.3\\
+      VFR100\_60\_1 & 9395  &  TL & -- & $\infty$\\
+      VFR500\_40\_1 & 28548 &  TL & -- & $\infty$\\
+      VFR500\_60\_3 & 31125 &  TL & -- & $\infty$\\
+      VFR600\_20\_1 & 31433 &  TL & -- & $\infty$\\
+      VFR700\_20\_10 & 36417 & TL & -- & $\infty$\\ 
+      \bottomrule
+   \end{tabular}
+\end{table}
+
+\begin{figure}
+   \centering
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR10_15_1.pdf}
+   }
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_10_3.pdf}
+   }\\
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR20_20_1.pdf}
+   }
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR60_5_10.pdf}
+   }\\
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
+   }
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR100_60_1.pdf}
+   }
+   \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
+      instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
+      por caso de teste.}
+\end{figure}
+
+\begin{figure}
+   \ContinuedFloat
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_40_1.pdf}
+   }
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR500_60_3.pdf}
+   }\\
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR600_20_1.pdf}
+   }
+   \subfloat[][]{
+      \includegraphics[width=0.48\textwidth]{../resultados/boxplot-VFR700_20_10.pdf}
+   }
+   \caption{Boxplot relacionando valor médio da função objetivo para as diversas 
+      instâncias de testes, com vários valores \bm{$\alpha$} e 10 replicações
+      por caso de teste. Continuação da figura anterior.}
+\end{figure}
+
+\bibliographystyle{sbc}
+\bibliography{referencias}
+
+\end{document}
