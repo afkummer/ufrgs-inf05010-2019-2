@@ -99,6 +99,47 @@ problema.
 
 \section{Método de solução com GRASP e Busca Local}
 
+\begin{algorithm}[ht]
+   \SetKwFunction{proc}{Swap2LS}
+   \SetKwProg{myproc}{Procedure}{}{}
+   \myproc{\proc{$s^*$, numVezes}}{
+      $z^* \gets$ custo da solução atual\;
+      \For {$i \gets 1$ até $numVezes$} {
+         selecione tarefas $j_1 \neq j_2$, aleatoriamente \;
+         $\bar{s} \gets$ troque a ordem de processamento de $j_1 \leftrightarrow j_2$ \;
+         $\bar{z} \gets$ avalie o custo da solução $\bar{s}$ \;
+         \If {$\bar{z} < z^*$} {
+            $s^* \gets \bar{s}$ \;
+            $z^* \gets \bar{z}$ \;
+         }
+      }
+   }
+   \caption{Algoritmo de Busca Local iterada com trocas aleatória de duas tarefas.}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+   \SetKwFunction{proc}{GRASP}
+   \SetKwProg{myproc}{Procedure}{}{}
+   \myproc{\proc{$N$, $M$, $T$, $\alpha$}}{
+      $\mathit{pend} \gets \{1,\dots, N$\} \;
+      $s \gets $ lista vazia; $z \gets 0$ \;
+      \While{$\mathit{pend}$ não está vazio}{
+         $\mathit{RCL} \gets $ lista vazia \;
+         \For{$j \in \mathit{pend}$}{
+            $\bar{z}_j \gets$ custo da solução parcial $s$ com adição da tarefa $j$ \; 
+            adicione a tupla $(j, \bar{z}_j)$ em $\mathit{RCL}$ \;
+         }
+         ordene $\mathit{RCL}$ em ordem não crescente de $\bar{z}$ \;
+         $\mathit{tam} \gets$ tamanho da lista $\mathit{RCL}$ \;
+         $\mathit{tp} \gets$ escolhe tupla aleatória dos 
+            índices $[1, \max\{1, \alpha \cdot \mathit{tam}\} ]$ \;
+         adicione a tarefa e atualize o custo $z$ com $\mathit{RCL}_\mathit{tp}$ \;
+      }
+   }
+   \Return{$s$}
+   \caption{Algoritmo de Busca Local iterada com trocas aleatória de duas tarefas.}
+\end{algorithm}
+
 \section{Resultados computacionais}
 
 \tiny
