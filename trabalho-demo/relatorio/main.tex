@@ -181,7 +181,13 @@ A busca local faz diversas tentativas de troca da ordem de processamento de
 duas tarefas em posições distintas, e sempre aceita a troca na ordem das
 tarefas caso seja vantajosa (estratégia de ``primeira melhora''). De posse de
 ambos os algoritmos, é possível definir o método de solução completo como em
-\ref{algo:full}.
+\ref{algo:full}. A heurística começa com a construção de uma solução inicial
+utilizando-se o procedimento do algoritmo \ref{algo:GRASP}. Em seguida, o
+algoritmo de Busca Local é aplicado no laço das linhas (3--6) da
+heurística (\ref{algo:full}). A Busca Local iterada é aplicada usando-se três
+critérios distintos: até $\lceil N/100 \rceil$ tentativas de troca, depois
+$\lceil \mathit{iter}/1000 \rceil$ tentativas de troca, e então um número
+aleatório de trocas entre 1 e $N$.
 
 \begin{algorithm}[H]
    \footnotesize
@@ -227,7 +233,7 @@ linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}.
 
 \begin{table}[ht]
    \centering
-   \scriptsize
+   \footnotesize
    \begin{tabular}{lrrrr}
       \toprule
       Instância & BKS & Valor relaxação & Obj. solução inteira & GAP$_\mathrm{BKS}$ (\%) \\
