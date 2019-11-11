@@ -11,6 +11,7 @@
 \usepackage{bm}
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{booktabs,longtable}
+\usepackage{float}
 
 \usepackage{algpseudocode}
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
@@ -211,18 +212,31 @@ conduzidos nas instâncias de teste indicadas na definição do trabalho da
 disciplinas. Utilizou-se um computador Intel 3612QM @ 2.10GHz, dispondo-se de
 8 GB de memória principal. A heurística foi implementada em Python 
 3.7.4, e o modelo foi resolvido por meio do GLPK 4.65. O ambiente de testes foi
-o Arch Linux de 64 bits, com kernel padrão 5.3.8.
+o Arch Linux de 64 bits, com kernel linux-5.3.8.
 
+A tabela \ref{table:results-glpk} apresenta os resultados obtidos ao
+resolver-se a formulação matemática (\ref{pfsp:obj}--\ref{pfsp:Ddom}). Como
+critério de parada, utilizou-se um limite de tempo de 1 hora de execução, ou
+a prova da solução ótima pelo solver. O GLPK foi capaz de encontrar
+soluções inteiras apenas para as instâncias de menor porte, de até 60 tarefas e
+5 máquinas. Para as demais instâncias, o resolvedor não foi capaz de encontrar
+nem o valor de relaxação ótima do modelo. Apenas a instância
+\texttt{VFR10\_15\_1} teve sua solução ótima encontrada, após 1244,7 segundos de
+execução do resolvedor. As demais instâncias tiveram sua resolução interrompida
+por conta do limite de tempo estabelecido. Cabe-se ressaltar que foram
+habilitados os procedimentos de geração de cortes do solver com as opções da
+linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}.
 
 \begin{table}[ht]
+   \centering
    \begin{tabular}{lrrrr}
       \toprule
       Instância & BKS & Valor relaxação & Obj. solução inteira & GAP$_\mathrm{BKS}$ (\%) \\
       \midrule
-      VFR10\_15\_1 & 1307 & 880.0 & 1307 & \phantom{0}0.0\\
-      VFR10\_10\_3 & 1592 & 687.0 & 1873 & 56.9\\
-      VFR\_20\_20\_1 & 2270 & 1391.0 & 2573 & 42.6\\
-      VFR60\_5\_10 & 3663 & 382.0 & 3878 & 89.3\\
+      VFR10\_15\_1 & 1307 & 880,0 & 1307 & \phantom{0}0,0\\
+      VFR10\_10\_3 & 1592 & 687,0 & 1873 & 56,9\\
+      VFR\_20\_20\_1 & 2270 & 1391,0 & 2573 & 42,6\\
+      VFR60\_5\_10 & 3663 & 382,0 & 3878 & 89,3\\
       VFR100\_60\_1 & 9395  &  TL & -- & $\infty$\\
       VFR500\_40\_1 & 28548 &  TL & -- & $\infty$\\
       VFR500\_60\_3 & 31125 &  TL & -- & $\infty$\\
@@ -230,6 +244,49 @@ o Arch Linux de 64 bits, com kernel padrão 5.3.8.
       VFR700\_20\_10 & 36417 & TL & -- & $\infty$\\ 
       \bottomrule
    \end{tabular}
+   \caption{Resultado obtido por meio do GLPK.}
+   \label{table:results-glpk}
+\end{table}
+
+Os testes com a heurística GRASP e Busca Local foram conduzidos com diversas
+configurações de experimento. Cada instância foi resolvida considerando-se os
+valores de $\alpha \in \{0, 0.2, 0.4, 0.6, 0.8, 1.0\}$. Para cada valor de
+$\alpha$ e instância, executou-se 10 replicações do experimento, 
+utilizando-se sementes de aleatoriedades distintas. Considerando a melhor média
+de valor das soluções, constatou-se que os resultados mais promissores são
+obtidos com a configuração de $\alpha = 0.0$. Os resultados individuais para
+cada instância de teste estão listados na tabela
+\ref{table:results-heur-short}. Para cada instância, apresenta-se o valor de
+BKS da literatura, seguidos do valor de função objetivo médio e gap percentual
+em relação ao BKS da solução construtiva encontrada pelo GRASP. Em seguida, é
+apresentado o valor médio e gap percentual, também em relação ao BKS, da melhor
+solução encontrada pelo GRASP seguido de Busca Local. A fim de manter o tempo
+de execução da heurística abaixo de 5 minutos, estabeleceu-se um limite de
+repetições $\mathit{MAX\_ITER} = 2140$. Esse valor foi estabelecido ao testar
+quantas iterações a heurística conseguiu realizar na maior instância de testes.
+
+\begin{table}[ht]
+   \centering
+   \scriptsize
+   \begin{tabular}{lrrccccr}
+   \toprule
+   Instância & BKS & F.O. GRASP & GAP$_\mathrm{GRASP}$ (\%) & F.O G+BL & GAP$_\mathrm{G+BL}$ (\%) & Tempo (s.) \\ 
+   \midrule
+   VFR10\_15\_1 & 1307,00 & $1424 \pm 0$ & 8,95 & $1339,6 \pm 18,319$ & 2,49 & $1,5$ \\ 
+   VFR20\_10\_3 & 1592,00 & $2017 \pm 0$ & 26,70 & $1687,5 \pm 29,304$ & 6,00 & $2,1$ \\ 
+   VFR20\_20\_1 & 2270,00 & $2715 \pm 0$ & 19,60 & $2360,1 \pm 33,478$ & 3,97 & $3,9$ \\ 
+   VFR60\_5\_10 & 3663,00 & $3849 \pm 0$ & 5,08 & $3668,4 \pm 7,291$ & 0,15 & $3,2$ \\ 
+   VFR60\_10\_3 & 3423,00 & $4357 \pm 0$ & 27,29 & $3632,6 \pm 62,45$ & 6,12 &
+   $6,0$ \\ 
+   VFR100\_60\_1 & 9395,00  & $11247 \pm 0$ & 19,71 & $10008,8 \pm 47,123$ & 6,53 & $57,7$ \\ 
+   VFR500\_40\_1 & 28548,00 & $33119 \pm 0$ & 16,01 & $30640,6 \pm 67,832$ & 7,33 & $200,4$ \\ 
+   VFR500\_60\_3 & 31125,00 & $36930 \pm 0$ & 18,65 & $33539,6 \pm 106,966$ & 7,76 & $298,5$ \\ 
+   VFR600\_20\_1 & 31433,00 & $35473 \pm 0$ & 12,85 & $32904,4 \pm 69,306$ & 4,68 & $118,4$ \\ 
+   VFR700\_20\_10 & 36417,00 & $40916 \pm 0$ & 12,35 & $37857,4 \pm 114,996$ & 3,96 & $140,6$ \\ 
+   \bottomrule
+   \end{tabular}
+   \caption{Resultados médios da heurística para $\bm{\alpha = 0}$.} 
+   \label{table:results-heur-short}
 \end{table}
 
 \section{Conclusões}
@@ -281,6 +338,7 @@ o Arch Linux de 64 bits, com kernel padrão 5.3.8.
 \bibliographystyle{sbc}
 \bibliography{referencias}
 
+\clearpage 
 \appendix
 
 \section*{Apêndice A -- Média dos resultados computacionais para diversos
