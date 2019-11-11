@@ -10,7 +10,7 @@
 \usepackage[caption=false]{subfig}
 \usepackage{bm}
 \usepackage{amsmath,amsfonts,amssymb}
-\usepackage{booktabs,longtable}
+\usepackage{booktabs,longtable,multirow}
 \usepackage{float}
 
 \usepackage{algpseudocode}
@@ -201,9 +201,7 @@ ambos os algoritmos, é possível definir o método de solução completo como e
 \end{algorithm}
 
 Como consideração final, todas as seleções aleatórias se deram
-por distribuição uniforme. Utilizou-se cada uma das replicações 
-$n=1, \dots, 10$ da heurística como semente do gerador de números
-pseudoaleatórios.
+por distribuição uniforme. 
 
 \section{Resultados computacionais}
 
@@ -229,6 +227,7 @@ linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}.
 
 \begin{table}[ht]
    \centering
+   \scriptsize
    \begin{tabular}{lrrrr}
       \toprule
       Instância & BKS & Valor relaxação & Obj. solução inteira & GAP$_\mathrm{BKS}$ (\%) \\
@@ -248,41 +247,47 @@ linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}.
    \label{table:results-glpk}
 \end{table}
 
-Os testes com a heurística GRASP e Busca Local foram conduzidos com diversas
-configurações de experimento. Cada instância foi resolvida considerando-se os
+Os testes com a heurística GRASP e Busca Local foram conduzidos 
+considerando-se os
 valores de $\alpha \in \{0, 0.2, 0.4, 0.6, 0.8, 1.0\}$. Para cada valor de
 $\alpha$ e instância, executou-se 10 replicações do experimento, 
 utilizando-se sementes de aleatoriedades distintas. Considerando a melhor média
 de valor das soluções, constatou-se que os resultados mais promissores são
 obtidos com a configuração de $\alpha = 0.0$. Os resultados individuais para
 cada instância de teste estão listados na tabela
-\ref{table:results-heur-short}. Para cada instância, apresenta-se o valor de
-BKS da literatura, seguidos do valor de função objetivo médio e gap percentual
-em relação ao BKS da solução construtiva encontrada pelo GRASP. Em seguida, é
-apresentado o valor médio e gap percentual, também em relação ao BKS, da melhor
-solução encontrada pelo GRASP seguido de Busca Local. A fim de manter o tempo
-de execução da heurística abaixo de 5 minutos, estabeleceu-se um limite de
+\ref{table:results-heur-short}. Por linha, apresenta-se a instância testada e o
+BKS reportado na literatura, seguidos do valor de função objetivo médio 
+e desvio percentual (em relação ao BKS)
+da solução construtiva encontrada pelo GRASP. Nas colunas seguintes, 
+são apresentados os valor médio e desvio percentual (também em relação 
+ao BKS), da melhor
+solução encontrada pelo GRASP com Busca Local, bem como o tempo de
+processamento total da heurística. A fim de manter o tempo
+de execução da heurística em até 5 minutos, estabeleceu-se um limite de
 repetições $\mathit{MAX\_ITER} = 2140$. Esse valor foi estabelecido ao testar
-quantas iterações a heurística conseguiu realizar na maior instância de testes.
+quantas iterações a heurística conseguiu realizar na maior instância de testes
+dentro desse limite de tempo.
 
 \begin{table}[ht]
    \centering
    \scriptsize
-   \begin{tabular}{lrrccccr}
+   \begin{tabular}{lrcccccc}
    \toprule
-   Instância & BKS & F.O. GRASP & GAP$_\mathrm{GRASP}$ (\%) & F.O G+BL & GAP$_\mathrm{G+BL}$ (\%) & Tempo (s.) \\ 
+   \multirow{2}[2]{*}{Instância} & \multirow{2}[2]{*}{BKS} & \multicolumn{2}{c}{Sol. GRASP} & 
+      \multicolumn{3}{c}{Sol. GRASP+BL}\\ \cmidrule(r){3-4} \cmidrule{5-7}
+   & & F.O. & Desvio (\%) & F.O. & Desvio (\%) & Tempo (seg.)\\
    \midrule
-   VFR10\_15\_1 & 1307,00 & $1424 \pm 0$ & 8,95 & $1339,6 \pm 18,319$ & 2,49 & $1,5$ \\ 
-   VFR20\_10\_3 & 1592,00 & $2017 \pm 0$ & 26,70 & $1687,5 \pm 29,304$ & 6,00 & $2,1$ \\ 
-   VFR20\_20\_1 & 2270,00 & $2715 \pm 0$ & 19,60 & $2360,1 \pm 33,478$ & 3,97 & $3,9$ \\ 
-   VFR60\_5\_10 & 3663,00 & $3849 \pm 0$ & 5,08 & $3668,4 \pm 7,291$ & 0,15 & $3,2$ \\ 
-   VFR60\_10\_3 & 3423,00 & $4357 \pm 0$ & 27,29 & $3632,6 \pm 62,45$ & 6,12 &
+   VFR10\_15\_1 & 1307 & $1424 \pm 0$ & 8,95 & $1339,6 \pm 18,319$ & 2,49 & $1,5$ \\ 
+   VFR20\_10\_3 & 1592 & $2017 \pm 0$ & 26,70 & $1687,5 \pm 29,304$ & 6 & $2,1$ \\ 
+   VFR20\_20\_1 & 2270 & $2715 \pm 0$ & 19,60 & $2360,1 \pm 33,478$ & 3,97 & $3,9$ \\ 
+   VFR60\_5\_10 & 3663 & $3849 \pm 0$ & 5,08 & $3668,4 \pm 7,291$ & 0,15 & $3,2$ \\ 
+   VFR60\_10\_3 & 3423 & $4357 \pm 0$ & 27,29 & $3632,6 \pm 62,45$ & 6,12 &
    $6,0$ \\ 
-   VFR100\_60\_1 & 9395,00  & $11247 \pm 0$ & 19,71 & $10008,8 \pm 47,123$ & 6,53 & $57,7$ \\ 
-   VFR500\_40\_1 & 28548,00 & $33119 \pm 0$ & 16,01 & $30640,6 \pm 67,832$ & 7,33 & $200,4$ \\ 
-   VFR500\_60\_3 & 31125,00 & $36930 \pm 0$ & 18,65 & $33539,6 \pm 106,966$ & 7,76 & $298,5$ \\ 
-   VFR600\_20\_1 & 31433,00 & $35473 \pm 0$ & 12,85 & $32904,4 \pm 69,306$ & 4,68 & $118,4$ \\ 
-   VFR700\_20\_10 & 36417,00 & $40916 \pm 0$ & 12,35 & $37857,4 \pm 114,996$ & 3,96 & $140,6$ \\ 
+   VFR100\_60\_1 & 9395  & $11247 \pm 0$ & 19,71 & $10008,8 \pm 47,123$ & 6,53 & $57,7$ \\ 
+   VFR500\_40\_1 & 28548 & $33119 \pm 0$ & 16,01 & $30640,6 \pm 67,832$ & 7,33 & $200,4$ \\ 
+   VFR500\_60\_3 & 31125 & $36930 \pm 0$ & 18,65 & $33539,6 \pm 106,966$ & 7,76 & $298,5$ \\ 
+   VFR600\_20\_1 & 31433 & $35473 \pm 0$ & 12,85 & $32904,4 \pm 69,306$ & 4,68 & $118,4$ \\ 
+   VFR700\_20\_10 & 36417 & $40916 \pm 0$ & 12,35 & $37857,4 \pm 114,996$ & 3,96 & $140,6$ \\ 
    \bottomrule
    \end{tabular}
    \caption{Resultados médios da heurística para $\bm{\alpha = 0}$.} 
