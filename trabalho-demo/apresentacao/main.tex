@@ -1,0 +1,80 @@
+\documentclass[professionalfonts]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{booktabs,multirow,longtable}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{subfig}
+\usepackage[round]{natbib}
+
+% Coisas adicionadas para ativar os overlays co Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+
+% Choose the Inf theme
+\usetheme{Inf}
+
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\SetArgSty{textnormal}
+\DontPrintSemicolon
+
+% Define the title with \title[short title]{long title}
+% Short title is optional
+\title[GRASP+BL para Flowshop]{Metaheurística GRASP com refinamento por busca local para o Flowshop Permutacional}
+
+% Optional subtitle
+\subtitle{Otimização Combinatória --- INF05010}
+
+\date{2019/2}
+
+% Author information
+\author{Alberto F. K. Neto}
+\institute{CUSTOM LAST PAGE, CHECK BELOW}
+
+% Disable pdflatex warnings about tiny bad boxes
+% Show a indicator of badboxes
+% \hfuzz=2pt
+% \overfullrule=50pt
+
+\begin{document}
+
+% Command to create title page
+\InfTitlePage%
+
+\begin{frame}
+   \frametitle{Agenda}
+   \tableofcontents
+\end{frame}
+
+\section*{Bibliography}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Referências}
+  \footnotesize
+  \bibliographystyle{plainnat}
+  \bibliography{bibliography}
+\end{frame}
+
+\section*{}
+
+\begin{frame}[plain]
+  \begin{center}
+      \LARGE \textbf{Obrigado!} \normalsize \\[24pt]
+      Alberto F. K. Neto\\
+      \footnotesize
+      \smallskip
+      \color{InfGray}
+      Institute of Informatics (II)\\
+      Federal University of Rio Grande do Sul (UFRGS)\\
+      \texttt{afkneto@inf.ufrgs.br}\\[8pt]
+      \includegraphics[width=70pt]{inf-logo-white}
+  \end{center}
+\end{frame}
+
+\end{document}
+
+
+
