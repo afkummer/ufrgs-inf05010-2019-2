@@ -228,8 +228,10 @@ nem o valor de relaxação ótima do modelo. Apenas a instância
 \texttt{VFR10\_15\_1} teve sua solução ótima encontrada, após 1244,7 segundos de
 execução do resolvedor. As demais instâncias tiveram sua resolução interrompida
 por conta do limite de tempo estabelecido. Cabe-se ressaltar que foram
-habilitados os procedimentos de geração de cortes do solver com as opções da
-linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}.
+habilitados os procedimentos de geração de cortes e procedimentos avançados
+para escolha da variável de \textit{branching} do solver com as opções da
+linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}. Mais informações estão
+disponíveis na documentação do GNU GLPK.
 
 \begin{table}[ht]
    \centering
@@ -300,7 +302,26 @@ dentro desse limite de tempo.
    \label{table:results-heur-short}
 \end{table}
 
+Observou-se um desvio médio percentual de 16,9\% das soluções inicias com
+GRASP, em relação ao BKS da literatura, contra o desvio médio percentual de
+4,9\%  da
+abordagem GRASP com Busca Local. Conclui-se 
+que a Busca Local foi efetiva em melhorar as soluções encontradas pelo
+GRASP, estreitando a faixa de desvios médios de $5,08 \sim 27,29\%$ para
+$0,15 \sim 7,76\%$.
+
 \section{Conclusões}
+
+O Flowshop Permutacional é um problema de otimização combinatória relevante, e
+métodos eficientes para solução de problema são de interesse acadêmico e
+prático. Ao que se pode observar, métodos de resolução exata com programação
+matemática são eficazes para resolver o PFSP, mas demandam muito tempo para
+obtenção de soluções minimamente factíveis. Dessa forma, propôs-se uma
+abordagem heurística baseada em solução construtiva inicial com GRASP, seguida
+de um refinamento com busca local randomizada. Os experimentos computacionais
+demonstraram a eficiência da heurística em encontrar soluções de alta qualidade
+do problema, e foi possível verificar que tanto o GRASP quanto a Busca Local
+foram capazes de contribuir para melhoramento das soluções.
 
 % \begin{figure}
 %    \centering
