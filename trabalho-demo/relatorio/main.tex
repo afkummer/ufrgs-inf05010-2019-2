@@ -10,7 +10,13 @@
 \usepackage[caption=false]{subfig}
 \usepackage{bm}
 \usepackage{amsmath,amsfonts,amssymb}
-\usepackage{booktabs,longtable}
+\usepackage{booktabs,longtable,multirow}
+\usepackage{float}
+
+\usepackage{algpseudocode}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\SetArgSty{textnormal}
+\DontPrintSemicolon
 
 \sloppy
 
@@ -51,48 +57,193 @@ execução das tarefas que minimize o tempo final de processamento da última
 máquina considerada. Essa ordem de execução é seguida por todas as máquinas.
 
 \cite{tseng2004-flowshop-models} propuseram um modelo de programação linear
-inteira mista para o problema.
+inteira mista para o problema. As variáveis binárias $D_{ik} \in \{0,1\}$
+assumem o valor $1$ para indicar
+se a tarefa $i$ deve ser processada em algum momento anterior ao 
+processamento da tarefa $k$, com $1 \leqslant i < k \leqslant N$.
+Já as variáveis contínuas $C_{ri} \geqslant 0$ indicam o horizonte de tempo 
+de processamento que cada tarefa $ 1 \leqslant i \leqslant N$ em cada
+máquina $1 \leqslant r \leqslant M$.
+Adicionamente, a variável $C_\mathrm{max} \geqslant 0$ é utilizado no
+cálculo do tempo final de processamento da última máquina. 
+De posse dessas definições, a seguinte formulação modela o Problema de 
+Flowshop permutacional. Note a existência de um parâmetro $P$, que é um 
+número suficientemente grande usado como ``big-M'' na modelagem das 
+restrições lógicas do modelo.
 
-
-Variável $C_{ri} \geqslant 0$ indica o tempo que a tarefa $i$ completou na máquina $r$.
-
-Variável $D_{ik} \in \{0,1\}$ (=1) indica se a tarefa $i$ é executada em algum momento antes da
-tarefa $k$; (=0) caso contrário.
-
-Parâmetro ``big-M'' $P$.
+\clearpage 
 
 \begin{align}
-   \text{Minimize } C_\mathrm{max}
+   \text{Minimize } C_\mathrm{max} \label{pfsp:obj}
 \end{align}
 Sujeito a:
 \begin{align}
-   & C_{1i} \geqslant T_{1i} & & 1 \leqslant i \leqslant N\\
+   & C_{1i} \geqslant T_{1i} & & 1 \leqslant i \leqslant N \label{pfsp:complM0} \\
    & C_{ri} - C_{r-1,i} \geqslant T_{ri} & & 2 \leqslant r \leqslant M, 
-      1 \leqslant i \leqslant N\\
+      1 \leqslant i \leqslant N \label{pfsp:complM} \\
    & C_{ri} - C_{rk} + PD_{ik} \geqslant T_{ri} & & 1 \leqslant r \leqslant M, 
-      1 \leqslant i < k \leqslant N\\
+      1 \leqslant i < k \leqslant N \label{pfsp:jobSeqA}\\
    & C_{ri} - C_{rk} + PD_{ik} \leqslant P - T_{rk} & & 1 \leqslant r \leqslant M, 
-      1 \leqslant i < k \leqslant N\\
-   & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N
+      1 \leqslant i < k \leqslant N \label{pfsp:jobSeqB} \\
+   & C_\mathrm{max} \geqslant C_{Mi} & & 1 \leqslant i \leqslant N \label{pfsp:makespan} \\
+   & C_{ri} \geqslant 0 & & 1 \leqslant r \leqslant M, 1 \leqslant i \leqslant N \label{pfsp:Cdom}\\
+   & D_{ik} \in \{0,1\} & & 1 \leqslant i < k \leqslant N \label{pfsp:Ddom}
 \end{align}
+
+A função objetivo (\ref{pfsp:obj}) minimiza o tempo de processamento final da
+última máquina do problema. As restrições (\ref{pfsp:complM0}) e
+(\ref{pfsp:complM}) modelam o tempo final de processamento das tarefas na
+primera e demais máquinas, respectivamente. As restrições
+(\ref{pfsp:jobSeqA}--\ref{pfsp:jobSeqB}) garantem uma única ordem de execução 
+das tarefas em todas as máquinas. A restrição (\ref{pfsp:makespan}) calcula o
+tempo final de processamento da última máquina. Por fim, as restrições
+(\ref{pfsp:Cdom}--\ref{pfsp:Ddom}) modelam o domínio das variáveis de decisão do
+problema.
 
 \section{Método de solução com GRASP e Busca Local}
 
+Tendo em vista a questão da típica baixa eficiência de métodos exatos em
+resolver problemas de otimização combinatória discreta, propõe-se o seguinte
+método de solução heurístico para resolução do problema. O método de solução é
+implementa umaa heurística GRASP para construção de uma soluçãoa inicial
+\cite{feo1994-grasp}, seguida de uma fase de intensificação com busca local. 
+O pseudocódigo dos algoritmos de construção inicial e de busca local são 
+listados em \ref{algo:GRASP} e \ref{algo:LS}. 
+Na notação a seguir, uma solução é definida como uma lista com a ordem de
+processamento das tarefas, e pode ser parcial ou completa.
+Uma visão geral do método de
+solução está disponível no algoritmo \ref{algo:full}.
+
+\begin{algorithm}[H]
+   \footnotesize
+   \SetKwFunction{proc}{GRASP}
+   \SetKwProg{myproc}{Procedure}{}{}
+   \myproc{\proc{$N$, $M$, $T$, $\alpha$}}{
+      $\mathit{pend} \gets$ lista com valores $1, 2, \dots, N$ \;
+      $s \gets $ lista vazia; $z \gets 0$ \;
+      \While{$\mathit{pend}$ não está vazia}{
+         $\mathit{RCL} \gets $ lista vazia \;
+         \For{$j \in \mathit{pend}$}{
+            $\bar{z}_j \gets$ custo da solução parcial $s$ com adição da tarefa $j$ \; 
+            adicione a tupla $(j, \bar{z}_j)$ em $\mathit{RCL}$ \;
+         }
+         ordene $\mathit{RCL}$ em ordem não crescente de $\bar{z}$ \;
+         $\mathit{tam} \gets$ tamanho da lista $\mathit{RCL}$ \;
+         $\mathit{tp} \gets$ escolhe aleatoriamente um índice 
+            de $[1, \max\{1, \alpha \cdot \mathit{tam}\} ]$ \;
+         atualize a solução $s$ e custo $z$ com os dados da tupla $\mathit{RCL}_\mathit{tp}$ \;
+         remova a tarefa referente a $\mathit{tp}$ de $\mathit{pend}$ \;
+      }
+   }
+   \Return{$s$}
+   \caption{Construção de solução inicial com GRASP.}
+   \label{algo:GRASP}
+\end{algorithm}
+
+O algoritmo GRASP inicial com uma solução vazia, de custo 0, e incrementalmente
+adiciona tarefas na ordem de processamento das máquinas. Inicialmente, todas as
+tarefas são marcadas como pendentes (lista $\mathit{pend}$). A cada iteração do 
+laço principal
+(linhas 4--13), calcula-se o custo de inserção de cada tarefa pendente
+na solução parcial $s$. Esses valores de custo são adicionados à
+lista $\mathit{RCL}$ de tarefas candidatas a entrar na solução. Faz-se a
+ordenação dessa lista em ordem não crescente de custo de solução,
+e escolhe-se aleatoriamente uma das $\alpha$\% tarefas iniciais da lista de
+candidatos. Essa tarefa entra na solução parcial $s$, e o custo $z$ é
+atualizado de acordo. Finalmente, a tarefa é removida da lista de pendentes e
+a próxima iteração inicia. Essa implementação de GRASP faz a seleção com
+$\alpha$ pelos índices da lista de candidatos.
+
+\begin{algorithm}[H]
+   \footnotesize
+   \SetKwFunction{proc}{Swap2LS}
+   \SetKwProg{myproc}{Procedure}{}{}
+   \myproc{\proc{$s^*$, numVezes}}{
+      $z^* \gets$ custo da solução atual\;
+      \For {$i \gets 1$ até $numVezes$} {
+         selecione tarefas $j_1 \neq j_2$ aleatoriamente, com distribuição uniforme \;
+         $\bar{s} \gets$ troque a ordem de processamento de $j_1 \leftrightarrow j_2$ em $s^*$ \;
+         $\bar{z} \gets$ avalie o custo da solução $\bar{s}$ \;
+         \If {$\bar{z} < z^*$} {
+            $s^* \gets \bar{s}$ \;
+            $z^* \gets \bar{z}$ \;
+         }
+      }
+   }
+   \Return $s*$
+   \caption{Algoritmo de Busca Local iterada com trocas aleatória.}
+   \label{algo:LS}
+\end{algorithm}
+
+Após a construção de uma solução inicial com GRASP, inicia-se a fase de
+melhoramento da solução com o algoritmo de busca local iterado \ref{algo:LS}.
+A busca local faz diversas tentativas de troca da ordem de processamento de
+duas tarefas em posições distintas, e sempre aceita a troca na ordem das
+tarefas caso seja vantajosa (estratégia de ``primeira melhora''). De posse de
+ambos os algoritmos, é possível definir o método de solução completo como em
+\ref{algo:full}. A heurística começa com a construção de uma solução inicial
+utilizando-se o procedimento do algoritmo \ref{algo:GRASP}. Em seguida, o
+algoritmo de Busca Local é aplicado no laço das linhas (3--6) da
+heurística (\ref{algo:full}). A Busca Local iterada é aplicada usando-se três
+critérios distintos: até $\lceil N/100 \rceil$ tentativas de troca, depois
+$\lceil \mathit{iter}/1000 \rceil$ tentativas de troca, e então um número
+aleatório de trocas entre 1 e $N$.
+
+\begin{algorithm}[H]
+   \footnotesize
+   \SetKwFunction{proc}{GRASP\_LS}
+   \SetKwProg{myproc}{Procedure}{}{}
+   \myproc{\proc{$N$, $M$, $T$, $\alpha$}}{
+      $s \gets$ \texttt{GRASP}($N$, $M$, $T$, $\alpha$) \;
+      \For{$\mathit{iter} \gets 1$ até $\textit{MAX\_ITER}$ } {
+         \texttt{Swap2LS}($s$, $\lceil N/100 \rceil$) \;
+         \texttt{Swap2LS}($s$, $\lceil \mathit{iter}/1000 \rceil$) \;
+         \texttt{Swap2LS}($s$, \texttt{randomInt}(1,N)) \;
+      }
+   }
+   \Return $s$
+   \caption{Algoritmo completo da heurística GRASP com Busca Local.}
+   \label{algo:full}
+\end{algorithm}
+
+Como consideração final, todas as seleções aleatórias se deram
+por distribuição uniforme. 
+
 \section{Resultados computacionais}
 
-\tiny
-\input{table-medias.tex}
-\normalsize
+Os testes computacionais da heurística e da formulação matemática foram
+conduzidos nas instâncias de teste indicadas na definição do trabalho da
+disciplinas. Utilizou-se um computador Intel 3612QM @ 2.10GHz, dispondo-se de
+8 GB de memória principal. A heurística foi implementada em Python 
+3.7.4, e o modelo foi resolvido por meio do GLPK 4.65. O ambiente de testes foi
+o Arch Linux de 64 bits, com kernel linux-5.3.8.
+
+A tabela \ref{table:results-glpk} apresenta os resultados obtidos ao
+resolver-se a formulação matemática (\ref{pfsp:obj}--\ref{pfsp:Ddom}). Como
+critério de parada, utilizou-se um limite de tempo de 1 hora de execução, ou
+a prova da solução ótima pelo solver. O GLPK foi capaz de encontrar
+soluções inteiras apenas para as instâncias de menor porte, de até 60 tarefas e
+5 máquinas. Para as demais instâncias, o resolvedor não foi capaz de encontrar
+nem o valor de relaxação ótima do modelo. Apenas a instância
+\texttt{VFR10\_15\_1} teve sua solução ótima encontrada, após 1244,7 segundos de
+execução do resolvedor. As demais instâncias tiveram sua resolução interrompida
+por conta do limite de tempo estabelecido. Cabe-se ressaltar que foram
+habilitados os procedimentos de geração de cortes e procedimentos avançados
+para escolha da variável de \textit{branching} do solver com as opções da
+linha de comando \texttt{-{}-presol -{}-bestp -{}-mir}. Mais informações estão
+disponíveis na documentação do GNU GLPK.
 
 \begin{table}[ht]
+   \centering
+   \footnotesize
    \begin{tabular}{lrrrr}
       \toprule
       Instância & BKS & Valor relaxação & Obj. solução inteira & GAP$_\mathrm{BKS}$ (\%) \\
       \midrule
-      VFR10\_15\_1 & 1307 & 880.0 & 1307 & \phantom{0}0.0\\
-      VFR10\_10\_3 & 1592 & 687.0 & 1873 & 56.9\\
-      VFR\_20\_20\_1 & 2270 & 1391.0 & 2573 & 42.6\\
-      VFR60\_5\_10 & 3663 & 382.0 & 3878 & 89.3\\
+      VFR10\_15\_1 & 1307 & 880,0 & 1307 & \phantom{0}0,0\\
+      VFR10\_10\_3 & 1592 & 687,0 & 1873 & 56,9\\
+      VFR\_20\_20\_1 & 2270 & 1391,0 & 2573 & 42,6\\
+      VFR60\_5\_10 & 3663 & 382,0 & 3878 & 89,3\\
       VFR100\_60\_1 & 9395  &  TL & -- & $\infty$\\
       VFR500\_40\_1 & 28548 &  TL & -- & $\infty$\\
       VFR500\_60\_3 & 31125 &  TL & -- & $\infty$\\
@@ -100,9 +251,77 @@ Sujeito a:
       VFR700\_20\_10 & 36417 & TL & -- & $\infty$\\ 
       \bottomrule
    \end{tabular}
+   \caption{Resultado obtido por meio do GLPK.}
+   \label{table:results-glpk}
 \end{table}
 
+Os testes com a heurística GRASP e Busca Local foram conduzidos 
+considerando-se os
+valores de $\alpha \in \{0, 0.2, 0.4, 0.6, 0.8, 1.0\}$. Para cada valor de
+$\alpha$ e instância, executou-se 10 replicações do experimento, 
+utilizando-se sementes de aleatoriedades distintas. Considerando a melhor média
+de valor das soluções, constatou-se que os resultados mais promissores são
+obtidos com a configuração de $\alpha = 0.0$. Os resultados individuais para
+cada instância de teste estão listados na tabela
+\ref{table:results-heur-short}. Por linha, apresenta-se a instância testada e o
+BKS reportado na literatura, seguidos do valor de função objetivo médio 
+e desvio percentual (em relação ao BKS)
+da solução construtiva encontrada pelo GRASP. Nas colunas seguintes, 
+são apresentados os valor médio e desvio percentual (também em relação 
+ao BKS), da melhor
+solução encontrada pelo GRASP com Busca Local, bem como o tempo de
+processamento total da heurística. A fim de manter o tempo
+de execução da heurística em até 5 minutos, estabeleceu-se um limite de
+repetições $\mathit{MAX\_ITER} = 2140$. Esse valor foi estabelecido ao testar
+quantas iterações a heurística conseguiu realizar na maior instância de testes
+dentro desse limite de tempo.
+
+\begin{table}[ht]
+   \centering
+   \scriptsize
+   \begin{tabular}{lrcccccc}
+   \toprule
+   \multirow{2}[2]{*}{Instância} & \multirow{2}[2]{*}{BKS} & \multicolumn{2}{c}{Sol. GRASP} & 
+      \multicolumn{3}{c}{Sol. GRASP+BL}\\ \cmidrule(r){3-4} \cmidrule{5-7}
+   & & F.O. & Desvio (\%) & F.O. & Desvio (\%) & Tempo (seg.)\\
+   \midrule
+   VFR10\_15\_1 & 1307 & $1424 \pm 0$ & 8,95 & $1339,6 \pm 18,319$ & 2,49 & $1,5$ \\ 
+   VFR20\_10\_3 & 1592 & $2017 \pm 0$ & 26,70 & $1687,5 \pm 29,304$ & 6 & $2,1$ \\ 
+   VFR20\_20\_1 & 2270 & $2715 \pm 0$ & 19,60 & $2360,1 \pm 33,478$ & 3,97 & $3,9$ \\ 
+   VFR60\_5\_10 & 3663 & $3849 \pm 0$ & 5,08 & $3668,4 \pm 7,291$ & 0,15 & $3,2$ \\ 
+   VFR60\_10\_3 & 3423 & $4357 \pm 0$ & 27,29 & $3632,6 \pm 62,45$ & 6,12 &
+   $6,0$ \\ 
+   VFR100\_60\_1 & 9395  & $11247 \pm 0$ & 19,71 & $10008,8 \pm 47,123$ & 6,53 & $57,7$ \\ 
+   VFR500\_40\_1 & 28548 & $33119 \pm 0$ & 16,01 & $30640,6 \pm 67,832$ & 7,33 & $200,4$ \\ 
+   VFR500\_60\_3 & 31125 & $36930 \pm 0$ & 18,65 & $33539,6 \pm 106,966$ & 7,76 & $298,5$ \\ 
+   VFR600\_20\_1 & 31433 & $35473 \pm 0$ & 12,85 & $32904,4 \pm 69,306$ & 4,68 & $118,4$ \\ 
+   VFR700\_20\_10 & 36417 & $40916 \pm 0$ & 12,35 & $37857,4 \pm 114,996$ & 3,96 & $140,6$ \\ 
+   \bottomrule
+   \end{tabular}
+   \caption{Resultados médios da heurística para $\bm{\alpha = 0}$.} 
+   \label{table:results-heur-short}
+\end{table}
+
+Observou-se um desvio médio percentual de 16,9\% das soluções inicias com
+GRASP, em relação ao BKS da literatura, contra o desvio médio percentual de
+4,9\%  da
+abordagem GRASP com Busca Local. Conclui-se 
+que a Busca Local foi efetiva em melhorar as soluções encontradas pelo
+GRASP, estreitando a faixa de desvios médios de $5,08 \sim 27,29\%$ para
+$0,15 \sim 7,76\%$.
+
 \section{Conclusões}
+
+O Flowshop Permutacional é um problema de otimização combinatória relevante, e
+métodos eficientes para solução de problema são de interesse acadêmico e
+prático. Ao que se pode observar, métodos de resolução exata com programação
+matemática são eficazes para resolver o PFSP, mas demandam muito tempo para
+obtenção de soluções minimamente factíveis. Dessa forma, propôs-se uma
+abordagem heurística baseada em solução construtiva inicial com GRASP, seguida
+de um refinamento com busca local randomizada. Os experimentos computacionais
+demonstraram a eficiência da heurística em encontrar soluções de alta qualidade
+do problema, e foi possível verificar que tanto o GRASP quanto a Busca Local
+foram capazes de contribuir para melhoramento das soluções.
 
 % \begin{figure}
 %    \centering
@@ -148,9 +367,17 @@ Sujeito a:
 %       por caso de teste. Continuação da figura anterior.}
 % \end{figure}
 
-\section*{Referências}
-
 \bibliographystyle{sbc}
 \bibliography{referencias}
+
+\clearpage 
+\appendix
+
+\section*{Apêndice A -- Média dos resultados computacionais para diversos
+\protect{$\alpha$}}
+
+\tiny
+\input{table-medias.tex}
+\normalsize
 
 \end{document}

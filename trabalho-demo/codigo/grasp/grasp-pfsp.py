@@ -165,7 +165,7 @@ if __name__ == '__main__':
       apply2swap(jobsSwapCrit)
       
       # Troca 2RandomSwap repetida de acordo com o número de iterações.
-      iterSwapCrit = ceil(inst.numJobs/1000)
+      iterSwapCrit = ceil(iterCnt/1000)
       apply2swap(iterSwapCrit)
 
       # Troca 2RandomSwap repetida por um número aleatório de vezes.

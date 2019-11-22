@@ -55,21 +55,23 @@ generate.tables <- function() {
          bks = unlist(bks.values[as.character(instancia)])
       ) %>%
       dplyr::mutate(
-         bks.gap = round(100 * (obj.best.mean - bks)/(bks), 2)
+         bks.gap = round(100 * (obj.best.mean - bks)/(bks), 2),
+         grasp.gap = round(100 * (obj.grasp.mean - bks)/(bks), 2)
       )
 
    # Gera a tabela de médias para todos os alphas.
    tmp2 <- tmp %>% dplyr::mutate(
       tempo = paste0('$', round(tempo.mean,1), ' \\pm ', round(tempo.sd, 2), '$'),
-      fo = paste0('$', round(obj.best.mean, 1), ' \\pm ', round(obj.best.sd, 3), '$')
+      fo = paste0('$', round(obj.best.mean, 1), ' \\pm ', round(obj.best.sd, 3), '$'),
+      grasp = paste0('$', round(obj.grasp.mean, 1), ' \\pm ', round(obj.grasp.sd, 3), '$')
    ) %>%
    dplyr::select(
-      instancia, bks, alpha, fo, bks.gap, tempo
+      instancia, bks, alpha, grasp, grasp.gap, fo, bks.gap, tempo
    )
    tmp2$instancia <- sanitize(tmp2$instancia)
-   colnames(tmp2) <- c('Instância', 'BKS', '$\\alpha$', 'Valor F.O.', 'GAP$_\\mathrm{BKS}$ (\\%)', 'Tempo (s.)')
+   colnames(tmp2) <- c('Instância', 'BKS', '$\\alpha$', 'F.O. GRASP', 
+      'GAP$_\\mathrm{GRASP}$', 'Valor F.O.', 'GAP$_\\mathrm{G+LS}$ (\\%)', 'Tempo (s.)')
    tmp2 <- xtable(tmp2)
-   align(tmp2) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
    sink('table-medias.tex')
    print(
       tmp2, 
